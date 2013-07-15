@@ -1,0 +1,33 @@
+.box {
+    border: 1px solid #d4d4d4;
+    box-shadow:         2px 2px 5px rgba(50, 50, 50, 0.15);
+    background-color: #fff;
+    padding: 10px;
+}
+
+body {
+    background-image: url('../img/cream_pixels.png');
+}
+
+.block {
+    display: block;
+}
+
+#photos {
+    display: inline-block;
+}
+
+.placeholder {
+    width: 175px;
+    height: 131px;
+}
+
+#canvases {
+    display: inline-block;
+
+}
+
+#controls {
+    display: block;
+    margin-bottom: 5px;
+}
