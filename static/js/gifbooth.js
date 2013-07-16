@@ -1,5 +1,6 @@
 var picturesTaken = 0;
 var previewIndex = 0;
+var cycleTimeoutId;
 $(function () {
 
     var streaming = false,
@@ -61,25 +62,28 @@ $(function () {
         $photo.css('width', width / 4);
         $photo.css('height', height / 4);
         $photo.css('display', 'block');
-
-        if (picturesTaken === 4) {
+        if (picturesTaken < 4) {
+            setTimeout(takePicture, 1000);
+        } else if (picturesTaken === 4) {
             $('#shutter-button').attr('disabled', true);
             $('#video').hide();
             $('#canvases').show();
             $('canvas').hide();
-            $('#save-button').show();
-            $('#retry-button').show();
+            $('#save-button').show().attr('disabled', false);
+            $('#retry-button').show().attr('disabled', false);
             cyclePreview();
         }
     }
 
     $('#shutter-button').on('click', function (e) {
+        $(this).attr('disabled', true);
         takePicture();
     });
 
     $('#save-button').on('click', uploadImages);
 
     $('#retry-button').on('click', function(e) {
+        clearTimeout(cycleTimeoutId);
         initializeBooth();
     });
 
@@ -89,13 +93,13 @@ $(function () {
 function cyclePreview() {
     //there should be four images in #canvases. cycle through them to mimic a gif
     var $canvases = $('canvas');
-    $canvases.hide()
+    $canvases.hide();
     $($canvases.get(previewIndex)).show();
     previewIndex++;
     if (previewIndex >= 4) {
         previewIndex = 0;
     }
-    setTimeout(cyclePreview, 1000);
+    cycleTimeoutId = setTimeout(cyclePreview, 1000);
 }
 
 function initializeBooth() {
@@ -104,34 +108,50 @@ function initializeBooth() {
     $('#save-button').hide();
     $('#canvases').empty();
     $('#photos').empty();
+    $('#video').show();
+    $('#shutter-button').attr('disabled', false);
 }
 
 function uploadImages() {
+    $('#save-button').attr('disabled', true);
+    $('#retry-button').attr('disabled', true);
+
     //grab images
     var remainingUploads = 4;
+    var timestamp = Date.now();
     $('canvas').each(function(i, image) {
-        var imageData = { image: image.toDataUrl('image/jpg', 1) };
+        var data = {
+            image: image.toDataURL('image/jpg', 1),
+            timestamp: timestamp,
+            index: i
+        };
         var settings = {
             url: "/upload",
             type: "post",
-            data: imageData,
+            data: data,
             success: uploadComplete,
             error: uploadError
         };
-        console.log("sending image");
         $.ajax(settings);
     });
 
     function uploadComplete() {
+        $('#error-message').text(remainingUploads + ' uploads remaining.');
         remainingUploads--;
         if (remainingUploads <= 0) {
+            $('#error-message').text('Upload complete.');
             // all the uploads worked. reinitialize
             initializeBooth();
         }
     }
 
-    function uploadError() {
+    function uploadError(e) {
+        remainingUploads--;
         // show error message and reinitialize
+        $('#error-message').text(e.responseText || "Error uploading image.");
+        if (remainingUploads <= 0) {
+            initializeBooth();
+        }
     }
 
 }
