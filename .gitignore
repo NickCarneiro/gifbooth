@@ -40,4 +40,5 @@ local.py
 .idea/*
 *.iml
 uploads/*
+gifs/*
 .DS_Store

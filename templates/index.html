@@ -1,36 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1" />
-    <title>Indeed Gifbooth</title>
-    <link rel="stylesheet" href="static/css/gifbooth.css" />
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="span12">
-                <div class="box">
-                    <h1>Gifbooth</h1>
-                    <div id="controls">
-                        <button id="shutter-button" class="block btn btn-large">Take photo</button>
-                        <button id="save-button" class="block btn btn-large btn-primary" style="display: none;">Save</button>
-                        <button id="retry-button" class="block btn btn-large btn-danger" style="display: none;">Try again</button>
-                        <span id="error-message"></span>
-                    </div>
-                    <div id="canvases">
-                    </div>
-                    <video id="video"></video>
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="span12">
+        <div class="box">
+            <h1>Gifbooth</h1>
+            <div id="controls">
+                <button id="shutter-button" class="block btn btn-large">Take photo</button>
+                <button id="save-button" class="block btn btn-large btn-primary" style="display: none;">Save</button>
+                <button id="retry-button" class="block btn btn-large btn-danger" style="display: none;">Try again</button>
+                <span id="error-message"></span>
+            </div>
+            <div id="canvases">
+            </div>
+            <video id="video"></video>
 
-                    <div id="photos">
-                    </div>
-                </div>
+            <div id="photos">
             </div>
         </div>
     </div>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="static/js/gifbooth.js"></script>
+</div>
+{% endblock %}
 
-</body>
-</html>
+{% block scripts %}
+<script src="static/js/gifbooth.js"></script>
+{% endblock %}

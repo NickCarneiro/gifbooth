@@ -8,7 +8,7 @@ $(function () {
         cover = document.querySelector('#cover'),
         canvas = document.querySelector('#canvas'),
         photo = document.querySelector('#photo'),
-        width = 700,
+        width = 702,
         height = 0;
 
     navigator.getMedia = ( navigator.getUserMedia ||

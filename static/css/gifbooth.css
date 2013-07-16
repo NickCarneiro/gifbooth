@@ -31,3 +31,7 @@ body {
     display: block;
     margin-bottom: 5px;
 }
+
+#stream-container img {
+    margin-bottom: 15px;
+}
