@@ -42,3 +42,11 @@ body {
     margin: 25px 0 0 10px;
     display: inline-block;
 }
+
+.range-label {
+    padding: 0 10px 0 10px;
+}
+
+#error-message {
+    font-size: 30px;
+}

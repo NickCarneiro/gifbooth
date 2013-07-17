@@ -2,6 +2,10 @@ var picturesTaken = 0;
 var previewIndex = 0;
 var cycleTimeoutId;
 var frameCount = 5;
+var framesPerSecond = 8;
+var frameDurationMs = Math.floor(1000 / framesPerSecond);
+var countDownSeconds = 3;
+var countDownSecondsRemaining = 0;
 $(function () {
 
     var streaming = false,
@@ -45,6 +49,16 @@ $(function () {
         }
     }, false);
 
+
+    function countDown() {
+        countDownSecondsRemaining--;
+        $('#error-message').text(countDownSecondsRemaining);
+        if (countDownSecondsRemaining <= 0) {
+            takePicture();
+        } else {
+            setTimeout(countDown, 1000);
+        }
+    }
     function takePicture() {
         picturesTaken++;
         var $canvasElement = $(document.createElement('canvas'));
@@ -62,9 +76,9 @@ $(function () {
         $photo.css('width', width / 4);
         $photo.css('height', height / 4);
         $photo.css('display', 'block');
-        frameCount = parseInt($('#frame-count-slider').val());
+
         if (picturesTaken < frameCount) {
-            setTimeout(takePicture, 1000);
+            setTimeout(takePicture, frameDurationMs);
         } else if (picturesTaken === frameCount) {
             $('#shutter-button').attr('disabled', true);
             $('#video').hide();
@@ -72,6 +86,7 @@ $(function () {
             $('canvas').hide();
             $('#save-button').show().attr('disabled', false);
             $('#retry-button').show().attr('disabled', false);
+            $('#error-message').text('Capture complete.');
             cyclePreview();
         }
     }
@@ -79,13 +94,16 @@ $(function () {
     $('#shutter-button').on('click', function (e) {
         $(this).attr('disabled', true);
         picturesTaken = 0;
-        takePicture();
+        frameCount = parseInt($('#frame-count-slider').val());
+        countDownSecondsRemaining = countDownSeconds;
+        countDown();
     });
 
     $('#save-button').on('click', uploadImages);
 
     $('#retry-button').on('click', function(e) {
         clearTimeout(cycleTimeoutId);
+        $('#error-message').empty();
         initializeBooth();
     });
 
@@ -103,7 +121,7 @@ function cyclePreview() {
     if (previewIndex >= frameCount) {
         previewIndex = 0;
     }
-    cycleTimeoutId = setTimeout(cyclePreview, 1000);
+    cycleTimeoutId = setTimeout(cyclePreview, frameDurationMs);
 }
 
 function initializeBooth() {
@@ -130,6 +148,7 @@ function uploadImages() {
             image: image.toDataURL('image/jpg', 1),
             timestamp: timestamp,
             index: i,
+            frameDuration: frameDurationMs,
             frameCount: frameCount
         };
         var settings = {

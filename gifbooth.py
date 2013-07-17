@@ -40,12 +40,14 @@ def upload():
         base64_image = request.form['image'].replace('data:image/png;base64,', '')
         frame_count = int(request.form['frameCount'])
         image_data = base64.b64decode(base64_image)
+        # how long to show each frame in ms
+        delay_ms = int(request.form['frameDuration'])
         # create folder for this set of images with timestamp as folder name
         batch_dir = APP_PATH + 'uploads/' + group_timestamp
         if not os.path.exists(batch_dir):
             os.mkdir(batch_dir)
         png_index = request.form['index']
-        file_name = png_index + '.png'
+        file_name = png_index.zfill(3) + '.png'
         f = open(batch_dir + '/' + file_name, 'w')
         f.write(image_data)
         f.close()
@@ -54,7 +56,8 @@ def upload():
         # we need to make a gif
         if len(os.listdir(batch_dir)) == frame_count:
             gif_destination_file = APP_PATH + 'gifs/' + group_timestamp + '.gif'
-            gif_result = pngs_to_gif(batch_dir, gif_destination_file)
+            delay_hundredths = delay_ms / 10
+            gif_result = pngs_to_gif(batch_dir, gif_destination_file, delay_hundredths)
 
             if gif_result:
                 #upload image to indgur
