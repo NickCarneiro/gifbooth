@@ -15,7 +15,7 @@ def index():
 def get_gifs():
     gifs = os.listdir(APP_PATH + 'gifs/')
     gif_urls = []
-    for filename in sorted(gifs):
+    for filename in sorted(gifs, reverse=True):
         if '.gif' in filename:
             gif_urls.append('/gifs/' + filename)
     return return_json({'urls': gif_urls})

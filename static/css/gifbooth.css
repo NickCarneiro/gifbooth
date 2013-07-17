@@ -34,8 +34,8 @@ body {
     margin-bottom: 5px;
 }
 
-#stream-container img {
-    margin-bottom: 15px;
+#stream-container {
+    width: 100%;
 }
 
 #frame-count-container {
