@@ -5,7 +5,7 @@
         <div class="box">
             <h1>Gifbooth</h1>
             <div id="controls">
-                <button id="shutter-button" class="block btn btn-large">Take photo</button>
+                <button id="shutter-button" class="block btn btn-large"><i class="icon-camera"></i></button>
                 <button id="save-button" class="block btn btn-large btn-primary" style="display: none;">Save</button>
                 <button id="retry-button" class="block btn btn-large btn-danger" style="display: none;">Try again</button>
                 <span id="error-message"></span>
@@ -23,4 +23,5 @@
 
 {% block scripts %}
 <script src="static/js/gifbooth.js"></script>
+<script>var FRAME_COUNT = {{ FRAME_COUNT }};</script>
 {% endblock %}

@@ -1,17 +1,17 @@
 import base64
 import os
-from flask import Flask, render_template, request, url_for, make_response, send_file
+from flask import Flask, render_template, request, send_file
 from gif_maker import pngs_to_gif
 from local import APP_PATH
 from utils import return_json, return_json_error
 
 app = Flask(__name__)
 
-
+FRAME_COUNT = 5
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', FRAME_COUNT=FRAME_COUNT)
 
 @app.route('/gifs')
 def get_gifs():
@@ -40,6 +40,7 @@ def upload():
         #todo: sanitize this
         group_timestamp = request.form['timestamp']
         base64_image = request.form['image'].replace('data:image/png;base64,', '')
+        frame_count = request.form['frameCount']
         image_data = base64.b64decode(base64_image)
         # create folder for this set of images with timestamp as folder name
         batch_dir = APP_PATH + 'uploads/' + group_timestamp
@@ -51,9 +52,9 @@ def upload():
         f.write(image_data)
         f.close()
         response = {'message': 'Upload successful'}
-        # if there are 4 files in the directory, we have gotten all the pngs
+        # if there are frame_count files in the directory, we have gotten all the pngs
         # we need to make a gif
-        if len(os.listdir(batch_dir)) == 4:
+        if len(os.listdir(batch_dir)) == frame_count:
             gif_destination_file = APP_PATH + 'gifs/' + group_timestamp + '.gif'
             gif_result = pngs_to_gif(batch_dir, gif_destination_file)
 
@@ -68,4 +69,4 @@ def upload():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run()
+    app.run(host='0.0.0.0')

@@ -58,13 +58,12 @@ $(function () {
         $photo.attr('src', data);
 
         $('#photos').append($photo);
-        $('#photos').css('padding-bottom',  height  - picturesTaken  * height / 4 + 'px');
         $photo.css('width', width / 4);
         $photo.css('height', height / 4);
         $photo.css('display', 'block');
-        if (picturesTaken < 4) {
+        if (picturesTaken < FRAME_COUNT) {
             setTimeout(takePicture, 1000);
-        } else if (picturesTaken === 4) {
+        } else if (picturesTaken === FRAME_COUNT) {
             $('#shutter-button').attr('disabled', true);
             $('#video').hide();
             $('#canvases').show();
@@ -77,6 +76,7 @@ $(function () {
 
     $('#shutter-button').on('click', function (e) {
         $(this).attr('disabled', true);
+        picturesTaken = 0;
         takePicture();
     });
 
@@ -96,7 +96,7 @@ function cyclePreview() {
     $canvases.hide();
     $($canvases.get(previewIndex)).show();
     previewIndex++;
-    if (previewIndex >= 4) {
+    if (previewIndex >= FRAME_COUNT) {
         previewIndex = 0;
     }
     cycleTimeoutId = setTimeout(cyclePreview, 1000);
@@ -113,17 +113,19 @@ function initializeBooth() {
 }
 
 function uploadImages() {
+    clearTimeout(cycleTimeoutId);
     $('#save-button').attr('disabled', true);
     $('#retry-button').attr('disabled', true);
 
     //grab images
-    var remainingUploads = 4;
+    var remainingUploads = FRAME_COUNT;
     var timestamp = Date.now();
     $('canvas').each(function(i, image) {
         var data = {
             image: image.toDataURL('image/jpg', 1),
             timestamp: timestamp,
-            index: i
+            index: i,
+            frameCount: FRAME_COUNT
         };
         var settings = {
             url: "/upload",
@@ -135,11 +137,14 @@ function uploadImages() {
         $.ajax(settings);
     });
 
-    function uploadComplete() {
+    function uploadComplete(res) {
         $('#error-message').text(remainingUploads + ' uploads remaining.');
         remainingUploads--;
         if (remainingUploads <= 0) {
             $('#error-message').text('Upload complete.');
+            if (res['gif_url']) {
+                $('#error-message').append(' <a href="' + res['gif_url'] + '">View Image</a>');
+            }
             // all the uploads worked. reinitialize
             initializeBooth();
         }
