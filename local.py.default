@@ -2,3 +2,4 @@
 HOSTNAME = 'localhost'
 #used for wsgi
 APP_PATH='/path/to/catmailer'
+CONVERT_PATH='/usr/bin/convert'
