@@ -39,6 +39,5 @@ local.py
 *.db
 .idea/*
 *.iml
-uploads/*
 gifs/*
 .DS_Store
