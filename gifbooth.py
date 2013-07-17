@@ -7,11 +7,9 @@ from utils import return_json, return_json_error
 
 app = Flask(__name__)
 
-FRAME_COUNT = 5
-
 @app.route('/')
 def index():
-    return render_template('index.html', FRAME_COUNT=FRAME_COUNT)
+    return render_template('index.html')
 
 @app.route('/gifs')
 def get_gifs():
@@ -40,7 +38,7 @@ def upload():
         #todo: sanitize this
         group_timestamp = request.form['timestamp']
         base64_image = request.form['image'].replace('data:image/png;base64,', '')
-        frame_count = request.form['frameCount']
+        frame_count = int(request.form['frameCount'])
         image_data = base64.b64decode(base64_image)
         # create folder for this set of images with timestamp as folder name
         batch_dir = APP_PATH + 'uploads/' + group_timestamp

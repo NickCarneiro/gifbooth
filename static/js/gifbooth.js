@@ -1,6 +1,7 @@
 var picturesTaken = 0;
 var previewIndex = 0;
 var cycleTimeoutId;
+var frameCount = 5;
 $(function () {
 
     var streaming = false,
@@ -61,9 +62,10 @@ $(function () {
         $photo.css('width', width / 4);
         $photo.css('height', height / 4);
         $photo.css('display', 'block');
-        if (picturesTaken < FRAME_COUNT) {
+        frameCount = parseInt($('#frame-count-slider').val());
+        if (picturesTaken < frameCount) {
             setTimeout(takePicture, 1000);
-        } else if (picturesTaken === FRAME_COUNT) {
+        } else if (picturesTaken === frameCount) {
             $('#shutter-button').attr('disabled', true);
             $('#video').hide();
             $('#canvases').show();
@@ -87,6 +89,8 @@ $(function () {
         initializeBooth();
     });
 
+    $('#frame-count-slider').slider();
+
 
 });
 
@@ -96,7 +100,7 @@ function cyclePreview() {
     $canvases.hide();
     $($canvases.get(previewIndex)).show();
     previewIndex++;
-    if (previewIndex >= FRAME_COUNT) {
+    if (previewIndex >= frameCount) {
         previewIndex = 0;
     }
     cycleTimeoutId = setTimeout(cyclePreview, 1000);
@@ -118,14 +122,15 @@ function uploadImages() {
     $('#retry-button').attr('disabled', true);
 
     //grab images
-    var remainingUploads = FRAME_COUNT;
+    var remainingUploads = frameCount;
     var timestamp = Date.now();
+
     $('canvas').each(function(i, image) {
         var data = {
             image: image.toDataURL('image/jpg', 1),
             timestamp: timestamp,
             index: i,
-            frameCount: FRAME_COUNT
+            frameCount: frameCount
         };
         var settings = {
             url: "/upload",
