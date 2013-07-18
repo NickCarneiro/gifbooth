@@ -32,6 +32,10 @@ def get_gif_file(filename):
     else:
         return return_json_error({'error': 'File not found'}, 400)
 
+@app.route('/random')
+def random_page():
+    return render_template('random.html')
+
 @app.route('/upload', methods=['POST'])
 def upload():
     try:
