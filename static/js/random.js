@@ -6,7 +6,13 @@ $(function() {
 
 function getGifList() {
     var gifs;
-    $.get('/gifs', function(res) {
+    var listUrl;
+    if (document.location.search.indexOf('winners') != -1) {
+        listUrl = '/winners';
+    } else {
+        listUrl = '/gifs'
+    }
+    $.get(listUrl, function(res) {
         gifs = res['urls'];
         cycleGif();
 

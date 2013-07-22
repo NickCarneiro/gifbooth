@@ -7,9 +7,11 @@ from utils import return_json, return_json_error
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/gifs')
 def get_gifs():
@@ -20,9 +22,42 @@ def get_gifs():
             gif_urls.append('/gifs/' + filename)
     return return_json({'urls': gif_urls})
 
+
+@app.route('/winners')
+def winners():
+    filenames = [
+        '1374210541835.gif',
+        '1374206136232.gif',
+        '1374186213781.gif',
+        '1374185178897.gif',
+        '1374183688215.gif',
+        '1374183650872.gif',
+        '1374183179217.gif',
+        '1374184430650.gif',
+        '1374186330306.gif',
+        '1374194548815.gif',
+        '1374208461297.gif',
+        '1374210830057.gif',
+        '1374212657807.gif',
+        '1374212817564.gif',
+        '1374206885481.gif',
+        '1374205848739.gif',
+        '1374194458159.gif',
+        '1374180198784.gif',
+        '1374247757899.gif',
+        '1374192031780.gif',
+        '1374191203721.gif'
+    ]
+    gif_urls = []
+    for name in filenames:
+        gif_urls.append('/gifs/' + name)
+    return return_json({'urls': gif_urls})
+
+
 @app.route('/stream')
 def get_stream():
     return render_template('stream.html')
+
 
 @app.route('/gifs/<filename>')
 def get_gif_file(filename):
@@ -32,9 +67,11 @@ def get_gif_file(filename):
     else:
         return return_json_error({'error': 'File not found'}, 400)
 
+
 @app.route('/random')
 def random_page():
     return render_template('random.html')
+
 
 @app.route('/upload', methods=['POST'])
 def upload():
