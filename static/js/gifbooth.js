@@ -143,9 +143,9 @@ function uploadImages() {
     var remainingUploads = frameCount;
     var timestamp = Date.now();
 
-    $('canvas').each(function(i, image) {
+    $('#photos').children().each(function(i, image) {
         var data = {
-            image: image.toDataURL('image/jpg', 1),
+            image: $(image).attr('src'),
             timestamp: timestamp,
             index: i,
             frameDuration: frameDurationMs,
